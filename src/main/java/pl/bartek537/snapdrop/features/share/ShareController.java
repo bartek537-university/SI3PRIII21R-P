@@ -11,6 +11,8 @@ import pl.bartek537.snapdrop.features.share.model.Share;
 import java.util.List;
 import java.util.UUID;
 
+import static pl.bartek537.snapdrop.Constants.MANAGEMENT_TOKEN_HEADER;
+
 @RestController
 @RequestMapping("shares")
 public class ShareController {
@@ -37,5 +39,10 @@ public class ShareController {
     public ResponseEntity<@NonNull Share> getShareById(@PathVariable UUID shareId) {
         return shareService.getShareById(shareId).map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("{shareId}")
+    public void deleteShareById(@PathVariable UUID shareId, @RequestHeader(MANAGEMENT_TOKEN_HEADER) String token) {
+        shareService.deleteShareById(shareId, token);
     }
 }
