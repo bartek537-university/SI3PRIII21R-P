@@ -1,8 +1,10 @@
 package pl.bartek537.snapdrop.features.share;
 
 import jakarta.transaction.Transactional;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pl.bartek537.snapdrop.features.share.dto.AttachmentDownload;
 import pl.bartek537.snapdrop.features.share.exception.ShareNotFoundException;
 import pl.bartek537.snapdrop.features.share.model.Attachment;
 import pl.bartek537.snapdrop.features.share.model.Share;
@@ -10,6 +12,7 @@ import pl.bartek537.snapdrop.features.share.repository.AttachmentRepository;
 import pl.bartek537.snapdrop.features.share.repository.ShareRepository;
 import pl.bartek537.snapdrop.features.share.repository.StorageRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,6 +32,7 @@ public class AttachmentService {
     @Transactional
     public Attachment storeAttachment(UUID shareId, MultipartFile file) {
         // TODO: Authenticate and authorize the user.
+        // TODO: Limit the number of files that can be uploaded.
 
         Share share = shareRepository.findById(shareId).orElseThrow(() -> new ShareNotFoundException(shareId));
 
@@ -41,5 +45,16 @@ public class AttachmentService {
         storageRepository.save(file, attachment.getId().toString());
 
         return attachment;
+    }
+
+    public Optional<Attachment> getAttachmentById(UUID attachmentId, UUID shareId) {
+        return attachmentRepository.findByIdAndShareId(attachmentId, shareId);
+    }
+
+    public Optional<AttachmentDownload> prepareAttachmentDownload(UUID attachmentId, UUID shareId) {
+        return getAttachmentById(attachmentId, shareId).map(attachment -> {
+            Resource file = storageRepository.loadAsResource(attachmentId.toString());
+            return new AttachmentDownload(file, attachment.getFileName());
+        });
     }
 }
