@@ -2,8 +2,10 @@ package pl.bartek537.snapdrop.features.share;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.bartek537.snapdrop.features.share.dto.ShareResponse;
 import pl.bartek537.snapdrop.features.share.model.Share;
 
 import java.util.List;
@@ -20,7 +22,8 @@ public class ShareController {
     }
 
     @PostMapping
-    public Share createNewShare() {
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public ShareResponse createNewShare() {
         return shareService.createNewShare();
     }
 
