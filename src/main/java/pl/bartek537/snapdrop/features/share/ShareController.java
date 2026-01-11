@@ -1,9 +1,13 @@
 package pl.bartek537.snapdrop.features.share;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.jspecify.annotations.NonNull;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import pl.bartek537.snapdrop.features.share.model.Share;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("shares")
@@ -18,5 +22,17 @@ public class ShareController {
     @PostMapping
     public Share createNewShare() {
         return shareService.createNewShare();
+    }
+
+    @GetMapping
+    @Profile("dev")
+    public List<Share> getAllShares() {
+        return shareService.getAllShares();
+    }
+
+    @GetMapping("{shareId}")
+    public ResponseEntity<@NonNull Share> getShareById(@PathVariable UUID shareId) {
+        return shareService.getShareById(shareId).map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
