@@ -10,6 +10,8 @@ import pl.bartek537.snapdrop.features.share.model.Attachment;
 
 import java.util.UUID;
 
+import static pl.bartek537.snapdrop.Constants.MANAGEMENT_TOKEN_HEADER;
+
 @RestController
 @RequestMapping("shares/{shareId}/attachments")
 public class AttachmentController {
@@ -21,9 +23,9 @@ public class AttachmentController {
     }
 
     @PostMapping
-    public ResponseEntity<@NonNull Attachment> storeAttachment(@PathVariable UUID shareId, @RequestParam("file") MultipartFile file) {
-        Attachment attachment = attachmentService.storeAttachment(shareId, file);
-        return ResponseEntity.status(HttpStatus.CREATED).body(attachment);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Attachment storeAttachment(@PathVariable UUID shareId, @RequestHeader(MANAGEMENT_TOKEN_HEADER) String token, @RequestParam("file") MultipartFile file) {
+        return attachmentService.storeAttachment(shareId, token, file);
     }
 
     @GetMapping("{attachmentId}")
