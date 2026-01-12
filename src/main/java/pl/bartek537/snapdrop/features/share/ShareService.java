@@ -13,10 +13,13 @@ import pl.bartek537.snapdrop.features.share.dto.SharePatchRequest;
 import pl.bartek537.snapdrop.features.share.dto.ShareResponse;
 import pl.bartek537.snapdrop.features.share.exception.InvalidTokenException;
 import pl.bartek537.snapdrop.features.share.exception.ShareNotFoundException;
+import pl.bartek537.snapdrop.features.share.exception.SlugExistsException;
+import pl.bartek537.snapdrop.features.share.exception.SlugGenerationException;
 import pl.bartek537.snapdrop.features.share.model.Share;
 import pl.bartek537.snapdrop.features.share.repository.ShareRepository;
 
 import java.time.Clock;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,28 +27,50 @@ import java.util.UUID;
 @Validated
 public class ShareService {
 
+    private static final int MAX_SLUG_GENERATION_RETRIES = 5;
+
     private final PasswordEncoder tokenEncoder = new BCryptPasswordEncoder();
 
     private final Clock clock;
 
+    private final SlugService slugService;
+
     private final ShareRepository shareRepository;
 
-    ShareService(Clock clock, ShareRepository shareRepository) {
+    ShareService(Clock clock, SlugService slugService, ShareRepository shareRepository) {
         this.clock = clock;
+        this.slugService = slugService;
         this.shareRepository = shareRepository;
     }
 
     @Transactional
     public ShareResponse createNewShare(@NonNull @Valid ShareCreateRequest request) {
         String token = KeyGenerators.string().generateKey();
+        String slug = request.slug() != null ? request.slug() : generateUniqueSlug();
+
+        if (shareRepository.existsBySlugAndExpiresAtAfter(slug, Instant.now(clock))) {
+            throw new SlugExistsException(slug);
+        }
 
         Share share = new Share(tokenEncoder.encode(token));
         share.setExpiresAt(request.expiresAt(), clock);
-        // TODO: Validate and set the slug.
+        share.setSlug(slug);
 
         share = shareRepository.save(share);
 
         return new ShareResponse(share, token);
+    }
+
+    private String generateUniqueSlug() {
+        for (int i = 0; i < MAX_SLUG_GENERATION_RETRIES; i++) {
+            String slug = slugService.generateSlug();
+
+            if (shareRepository.existsBySlugAndExpiresAtAfter(slug, Instant.now(clock))) {
+                continue;
+            }
+            return slug;
+        }
+        throw new SlugGenerationException();
     }
 
     // For development purposes only.
@@ -69,7 +94,6 @@ public class ShareService {
         if (request.expiresAt() != null) {
             share.setExpiresAt(request.expiresAt(), clock);
         }
-        // TODO: Validate and set the slug.
 
         return shareRepository.save(share);
     }

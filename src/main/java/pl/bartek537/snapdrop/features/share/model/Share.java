@@ -13,11 +13,13 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table
+@Table(indexes = @Index(columnList = "slug"))
 public class Share {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    private String slug;
 
     @CreationTimestamp
     private Instant createdAt;
@@ -40,6 +42,14 @@ public class Share {
 
     public UUID getId() {
         return this.id;
+    }
+
+    public String getSlug() {
+        return this.slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public Instant getExpiresAt() {
