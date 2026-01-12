@@ -8,4 +8,6 @@ public interface StorageRepository {
     void save(MultipartFile file, String fileName);
 
     Resource loadAsResource(String fileName);
+
+    boolean delete(String fileName);
 }

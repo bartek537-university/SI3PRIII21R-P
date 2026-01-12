@@ -1,5 +1,6 @@
 package pl.bartek537.snapdrop.features.share;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Repository;
@@ -16,11 +17,8 @@ import java.nio.file.Path;
 @Repository
 public class FileSystemStorageRepository implements StorageRepository {
 
-    private final FileSystemStorageProperties properties;
-
-    public FileSystemStorageRepository(FileSystemStorageProperties properties) {
-        this.properties = properties;
-    }
+    @Value("${storage.filesystem.upload-path}")
+    private Path uploadPath;
 
     // TODO: Optionally harden against file names that traverse through directories
     //  (should never happen, because they are constructed from UUIDs).
@@ -51,7 +49,17 @@ public class FileSystemStorageRepository implements StorageRepository {
         }
     }
 
+    @Override
+    public boolean delete(String fileName) {
+        Path destination = resolveFilePath(fileName);
+        try {
+            return Files.deleteIfExists(destination);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     private Path resolveFilePath(String fileName) {
-        return properties.getUploadPath().resolve(fileName);
+        return uploadPath.resolve(fileName);
     }
 }
