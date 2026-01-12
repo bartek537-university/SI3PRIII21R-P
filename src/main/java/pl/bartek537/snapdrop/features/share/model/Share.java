@@ -3,7 +3,12 @@ package pl.bartek537.snapdrop.features.share.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import pl.bartek537.snapdrop.features.share.exception.InvalidExpirationDateException;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,6 +18,11 @@ public class Share {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @CreationTimestamp
+    private Instant createdAt;
+
+    private Instant expiresAt;
 
     @JsonIgnore
     private String token;
@@ -30,6 +40,28 @@ public class Share {
 
     public UUID getId() {
         return this.id;
+    }
+
+    public Instant getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(Instant instant, Clock clock) {
+        Instant minimum = this.createdAt != null ? this.createdAt : Instant.now(clock);
+        Instant maximum = minimum.plus(24, ChronoUnit.HOURS);
+
+        if (instant == null) {
+            this.expiresAt = maximum;
+        } else if (instant.isBefore(minimum) || instant.isAfter(maximum)) {
+            throw new InvalidExpirationDateException(instant);
+        } else {
+            this.expiresAt = instant;
+        }
+    }
+
+    public boolean isExpired(Clock clock) {
+        Instant now = Instant.now(clock);
+        return this.expiresAt.isBefore(now);
     }
 
     public String getToken() {
