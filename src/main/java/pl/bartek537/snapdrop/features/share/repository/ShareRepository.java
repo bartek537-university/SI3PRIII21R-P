@@ -9,4 +9,6 @@ import java.util.UUID;
 
 public interface ShareRepository extends JpaRepository<@NonNull Share, @NonNull UUID> {
     boolean existsBySlugAndExpiresAtAfter(String slug, Instant instant);
+
+    int deleteAllByExpiresAtBefore(Instant now);
 }
