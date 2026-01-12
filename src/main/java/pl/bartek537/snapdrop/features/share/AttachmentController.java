@@ -1,11 +1,11 @@
 package pl.bartek537.snapdrop.features.share;
 
-import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.bartek537.snapdrop.features.share.dto.AttachmentDownload;
 import pl.bartek537.snapdrop.features.share.model.Attachment;
 
 import java.util.UUID;
@@ -29,17 +29,16 @@ public class AttachmentController {
     }
 
     @GetMapping("{attachmentId}")
-    public ResponseEntity<@NonNull Attachment> getAttachmentById(@PathVariable UUID shareId, @PathVariable UUID attachmentId) {
-        return attachmentService.getAttachmentById(attachmentId, shareId).map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public Attachment getAttachmentById(@PathVariable UUID shareId, @PathVariable UUID attachmentId) {
+        return attachmentService.getAttachmentById(attachmentId, shareId);
     }
 
     @GetMapping("{attachmentId}/file")
     public ResponseEntity<?> downloadAttachment(@PathVariable UUID shareId, @PathVariable UUID attachmentId) {
-        return attachmentService.prepareAttachmentDownload(attachmentId, shareId).map(download -> {
-            String contentDisposition = String.format("attachment; filename=\"%s\"", download.fileName());
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                    .body(download.resource());
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+        AttachmentDownload download = attachmentService.prepareAttachmentDownload(attachmentId, shareId);
+
+        String contentDisposition = String.format("attachment; filename=\"%s\"", download.fileName());
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .body(download.resource());
     }
 }
