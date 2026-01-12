@@ -30,7 +30,7 @@ public class ShareCleanupTask {
         logger.info("Starting cleanup task for expired shares...");
         try {
             int deletedCount = shareRepository.deleteAllByExpiresAtBefore(Instant.now(clock));
-            logger.info("Removed {} expired tasks.", deletedCount);
+            logger.info("Removed {} expired shares.", deletedCount);
         } catch (Exception e) {
             logger.error("Cleanup task for expired shares failed.", e);
         }
