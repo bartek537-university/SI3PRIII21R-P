@@ -1,10 +1,11 @@
 package pl.bartek537.snapdrop.features.share;
 
-import org.jspecify.annotations.NonNull;
+import jakarta.validation.Valid;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.bartek537.snapdrop.features.share.dto.ShareCreateRequest;
+import pl.bartek537.snapdrop.features.share.dto.SharePatchRequest;
 import pl.bartek537.snapdrop.features.share.dto.ShareResponse;
 import pl.bartek537.snapdrop.features.share.model.Share;
 
@@ -25,8 +26,8 @@ public class ShareController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public ShareResponse createNewShare() {
-        return shareService.createNewShare();
+    public ShareResponse createNewShare(@Valid @RequestBody ShareCreateRequest request) {
+        return shareService.createNewShare(request);
     }
 
     @GetMapping
@@ -36,9 +37,13 @@ public class ShareController {
     }
 
     @GetMapping("{shareId}")
-    public ResponseEntity<@NonNull Share> getShareById(@PathVariable UUID shareId) {
-        return shareService.getShareById(shareId).map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public Share getShareById(@PathVariable UUID shareId) {
+        return shareService.getShareById(shareId);
+    }
+
+    @PatchMapping("{shareId}")
+    public Share patchShareById(@PathVariable UUID shareId, @RequestHeader(MANAGEMENT_TOKEN_HEADER) String token, @Valid @RequestBody SharePatchRequest request) {
+        return shareService.patchShareById(shareId, token, request);
     }
 
     @DeleteMapping("{shareId}")
