@@ -10,4 +10,8 @@ public class ShareNotFoundException extends RuntimeException {
     public ShareNotFoundException(UUID shareId) {
         super("Share not found: " + shareId);
     }
+
+    public ShareNotFoundException(String slug) {
+        super("Share not found: " + slug);
+    }
 }
