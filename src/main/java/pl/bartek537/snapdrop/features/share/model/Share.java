@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import pl.bartek537.snapdrop.features.share.exception.EmptyShareClosureException;
 import pl.bartek537.snapdrop.features.share.exception.InvalidExpirationDateException;
 import pl.bartek537.snapdrop.features.share.exception.ShareClosedException;
 
@@ -62,6 +63,9 @@ public class Share {
     }
 
     public void setOpen(boolean isOpen) {
+        if (!isOpen && this.attachments.isEmpty()) {
+            throw new EmptyShareClosureException(this.id);
+        }
         if (!this.isOpen && isOpen) {
             throw new ShareClosedException(this.id);
         }
