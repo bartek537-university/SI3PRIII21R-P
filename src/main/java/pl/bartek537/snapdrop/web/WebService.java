@@ -20,8 +20,9 @@ public class WebService {
     }
 
     public Share getShareBySlug(String slug) {
-        return shareRepository.findBySlug(slug)
+        return shareRepository.findAllBySlug(slug).stream()
                 .filter(share -> !share.isExpired(clock))
+                .findFirst()
                 .orElseThrow(() -> new ShareNotFoundException(slug));
     }
 }
