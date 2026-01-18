@@ -79,18 +79,19 @@ public class ShareService {
     }
 
     public Share getShareById(UUID shareId) {
-        return shareRepository.findById(shareId).orElseThrow(() -> new ShareNotFoundException(shareId));
+        return getValidShare(shareId);
     }
 
     @Transactional
-    public Share patchShareById(UUID shareId, String token, @NonNull @Valid SharePatchRequest request) {
-        Share share = shareRepository.findById(shareId) //
-                .orElseThrow(() -> new ShareNotFoundException(shareId));
+    public Share patchShareById(UUID shareId, @NonNull @Valid SharePatchRequest request, String token) {
+        Share share = getValidShare(shareId);
 
         if (!tokenEncoder.matches(token, share.getToken())) {
             throw new InvalidTokenException();
         }
-
+        if (request.isOpen() != null) {
+            share.setOpen(request.isOpen());
+        }
         if (request.expiresAt() != null) {
             share.setExpiresAt(request.expiresAt(), clock);
         }
@@ -100,12 +101,18 @@ public class ShareService {
 
     @Transactional
     public void deleteShareById(UUID shareId, String token) {
-        Share share = shareRepository.findById(shareId) //
-                .orElseThrow(() -> new ShareNotFoundException(shareId));
+        Share share = getValidShare(shareId);
 
         if (!tokenEncoder.matches(token, share.getToken())) {
             throw new InvalidTokenException();
         }
+
         shareRepository.deleteById(shareId);
+    }
+
+    private Share getValidShare(UUID shareId) {
+        return shareRepository.findById(shareId) //
+                .filter(share -> !share.isExpired(clock)) //
+                .orElseThrow(() -> new ShareNotFoundException(shareId));
     }
 }

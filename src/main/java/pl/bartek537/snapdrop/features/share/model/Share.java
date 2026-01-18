@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import pl.bartek537.snapdrop.features.share.exception.InvalidExpirationDateException;
+import pl.bartek537.snapdrop.features.share.exception.ShareClosedException;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -20,6 +21,8 @@ public class Share {
     private UUID id;
 
     private String slug;
+
+    private boolean isOpen;
 
     @CreationTimestamp
     private Instant createdAt;
@@ -50,6 +53,17 @@ public class Share {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public boolean isOpen() {
+        return this.isOpen;
+    }
+
+    public void setOpen(boolean isOpen) {
+        if (!this.isOpen && isOpen) {
+            throw new ShareClosedException(this.id);
+        }
+        this.isOpen = isOpen;
     }
 
     public Instant getExpiresAt() {

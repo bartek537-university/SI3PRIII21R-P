@@ -42,8 +42,9 @@ public class ShareController {
     }
 
     @PatchMapping("{shareId}")
-    public Share patchShareById(@PathVariable UUID shareId, @RequestHeader(MANAGEMENT_TOKEN_HEADER) String token, @Valid @RequestBody SharePatchRequest request) {
-        return shareService.patchShareById(shareId, token, request);
+    public Share patchShareById(@PathVariable UUID shareId, @Valid @RequestBody SharePatchRequest request,
+                                @RequestHeader(MANAGEMENT_TOKEN_HEADER) String token) {
+        return shareService.patchShareById(shareId, request, token);
     }
 
     @DeleteMapping("{shareId}")
