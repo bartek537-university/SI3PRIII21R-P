@@ -14,7 +14,7 @@ import java.util.UUID;
 import static pl.bartek537.snapdrop.Constants.MANAGEMENT_TOKEN_HEADER;
 
 @RestController
-@RequestMapping("shares/{shareId}/attachments")
+@RequestMapping("api/shares/{shareId}/attachments")
 public class AttachmentController {
 
     private final AttachmentService attachmentService;

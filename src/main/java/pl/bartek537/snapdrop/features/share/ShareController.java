@@ -15,7 +15,7 @@ import java.util.UUID;
 import static pl.bartek537.snapdrop.Constants.MANAGEMENT_TOKEN_HEADER;
 
 @RestController
-@RequestMapping("shares")
+@RequestMapping("api/shares")
 public class ShareController {
 
     private final ShareService shareService;
