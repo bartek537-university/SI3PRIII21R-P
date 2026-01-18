@@ -2,6 +2,7 @@ package pl.bartek537.snapdrop.features.share.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import pl.bartek537.snapdrop.features.share.exception.InvalidExpirationDateException;
@@ -22,7 +23,7 @@ public class Share {
 
     private String slug;
 
-    private boolean isOpen;
+    private boolean isOpen = true;
 
     @CreationTimestamp
     private Instant createdAt;
@@ -55,6 +56,7 @@ public class Share {
         this.slug = slug;
     }
 
+    @JsonProperty("isOpen")
     public boolean isOpen() {
         return this.isOpen;
     }

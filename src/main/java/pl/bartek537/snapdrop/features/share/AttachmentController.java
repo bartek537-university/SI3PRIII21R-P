@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.bartek537.snapdrop.features.share.dto.AttachmentDownload;
 import pl.bartek537.snapdrop.features.share.model.Attachment;
 
+import java.util.Set;
 import java.util.UUID;
 
 import static pl.bartek537.snapdrop.Constants.MANAGEMENT_TOKEN_HEADER;
@@ -24,8 +25,14 @@ public class AttachmentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Attachment storeAttachment(@PathVariable UUID shareId, @RequestHeader(MANAGEMENT_TOKEN_HEADER) String token, @RequestParam("file") MultipartFile file) {
+    public Attachment storeAttachment(@PathVariable UUID shareId, @RequestParam("file") MultipartFile file,
+                                      @RequestHeader(MANAGEMENT_TOKEN_HEADER) String token) {
         return attachmentService.storeAttachment(shareId, token, file);
+    }
+
+    @GetMapping
+    public Set<Attachment> getAttachmentsByShareId(@PathVariable UUID shareId) {
+        return attachmentService.getAttachmentsByShareId(shareId);
     }
 
     @GetMapping("{attachmentId}")
@@ -34,11 +41,21 @@ public class AttachmentController {
     }
 
     @GetMapping("{attachmentId}/file")
-    public ResponseEntity<?> downloadAttachment(@PathVariable UUID shareId, @PathVariable UUID attachmentId) {
-        AttachmentDownload download = attachmentService.prepareAttachmentDownload(attachmentId, shareId);
+    public ResponseEntity<?> downloadAttachment(@PathVariable UUID shareId, @PathVariable UUID attachmentId,
+                                                @RequestHeader(value = MANAGEMENT_TOKEN_HEADER, required = false) String token) {
 
-        String contentDisposition = String.format("attachment; filename=\"%s\"", download.fileName());
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                .body(download.resource());
+        AttachmentDownload download = attachmentService.prepareAttachmentDownload(attachmentId, shareId, token);
+        return addContentDisposition(ResponseEntity.ok(), download.fileName()).body(download.resource());
+    }
+
+    private ResponseEntity.BodyBuilder addContentDisposition(ResponseEntity.BodyBuilder builder, String fileName) {
+        String contentDisposition = String.format("attachment; filename=\"%s\"", fileName);
+        return builder.header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
+    }
+
+    @DeleteMapping("{attachmentId}")
+    public void deleteAttachmentById(@PathVariable UUID shareId, @PathVariable UUID attachmentId,
+                                     @RequestHeader(MANAGEMENT_TOKEN_HEADER) String token) {
+        attachmentService.deleteAttachmentById(attachmentId, shareId, token);
     }
 }
