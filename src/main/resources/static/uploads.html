@@ -1,1 +1,73 @@
-this is uploads.html
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="/css/main.css" rel="stylesheet"/>
+    <link href="/css/uploads.css" rel="stylesheet"/>
+    <title>snap&rarr;drop</title>
+</head>
+<body>
+<header>
+    <span class="logo">
+        <a href="/">
+            snap <img alt="" aria-hidden="true" src="/images/arrow.svg"/> drop
+        </a>
+    </span>
+    <nav>
+        <ul>
+            <li><a href="/">new</a></li>
+            <li><a class="active" href="/uploads">my uploads</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <h1 class="step">
+        my uploads
+        <img alt="" aria-hidden="true" src="/images/upload.svg"/>
+    </h1>
+
+    <template id="attachment-template">
+        <li>
+            <a class="file-link"></a>
+        </li>
+    </template>
+    <template id="upload-template">
+        <tr>
+            <td class="slug"></td>
+            <td>
+                <time class="expiry-date"></time>
+                <button class="date-button">edit</button>
+            </td>
+            <td>
+                <ul class="attachments">
+                </ul>
+            </td>
+            <td>
+                <button class="share-button">share</button>
+                <button class="delete-button">delete</button>
+            </td>
+        </tr>
+    </template>
+
+    <table id="uploads-table">
+        <thead>
+        <tr>
+            <th>Slug</th>
+            <th style="width: 300px;">Expires at</th>
+            <th>Files</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</main>
+<footer>
+    <p>&copy; bartosz bieniek</p>
+</footer>
+
+<script src="/js/uploads.js"></script>
+
+</body>
+</html>
