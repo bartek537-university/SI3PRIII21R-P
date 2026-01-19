@@ -47,6 +47,9 @@ public class AttachmentCleanupTask {
 
     @Scheduled(cron = "${storage.cleanup.filesystem-cron}")
     public void deleteOrphanedUploads() {
+        // TODO: (optionally) harden against file names that traverse through directories
+        //  (should never happen, because they are constructed from UUIDs).
+
         logger.info("Starting cleanup task for orphaned uploads...");
         AtomicInteger deletedCount = new AtomicInteger();
 

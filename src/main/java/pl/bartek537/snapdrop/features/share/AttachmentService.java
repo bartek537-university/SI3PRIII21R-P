@@ -74,8 +74,7 @@ public class AttachmentService {
     }
 
     private Share getValidShare(UUID shareId) {
-        return shareRepository.findById(shareId) //
-                .filter(share -> !share.isExpired(clock)) //
+        return shareRepository.findById(shareId).filter(share -> !share.isExpired(clock))
                 .orElseThrow(() -> new ShareNotFoundException(shareId));
     }
 

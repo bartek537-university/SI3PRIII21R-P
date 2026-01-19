@@ -20,7 +20,7 @@ public class FileSystemStorageRepository implements StorageRepository {
     @Value("${storage.filesystem.upload-path}")
     private Path uploadPath;
 
-    // TODO: Optionally harden against file names that traverse through directories
+    // TODO: (optionally) harden against file names that traverse through directories
     //  (should never happen, because they are constructed from UUIDs).
 
     @Override
