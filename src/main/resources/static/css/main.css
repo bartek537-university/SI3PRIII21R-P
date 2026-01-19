@@ -16,6 +16,7 @@ body {
     padding: 32px;
     margin: auto;
     max-width: 864px;
+    height: 100%;
 }
 
 ::selection {
@@ -64,4 +65,9 @@ header {
         gap: 4px;
         text-decoration: none;
     }
+}
+
+footer {
+    position: sticky;
+    top: 100%;
 }
