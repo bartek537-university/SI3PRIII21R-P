@@ -1,5 +1,6 @@
 :root {
-    --primary: #FF674D;
+    --primary: rgb(255, 103, 77);
+    --primary-transparent: rgba(255, 103, 77, 0.25);
 }
 
 * {
@@ -15,6 +16,10 @@ body {
     padding: 32px;
     margin: auto;
     max-width: 864px;
+}
+
+::selection {
+    background: var(--primary-transparent);
 }
 
 .active {

@@ -1,1 +1,81 @@
-hello from main
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="/css/main.css" rel="stylesheet"/>
+    <link href="/css/index.css" rel="stylesheet"/>
+    <title>snap&rarr;drop</title>
+</head>
+<body>
+<header>
+    <h1 class="logo">
+        <a href="/">
+            snap <img alt="" aria-hidden="true" src="/images/arrow.svg"/> drop
+        </a>
+    </h1>
+    <nav>
+        <ul>
+            <li><a aria-current="page" class="active" href="/">new</a></li>
+            <li><a href="/uploads">my uploads</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <form id="file-upload-form">
+        <h2 class="step">
+            <label for="file-picker">
+                select files
+                <img alt="" aria-hidden="true" src="/images/select-files.svg"/>
+            </label>
+        </h2>
+
+        <template id="selected-file-item-template">
+            <li>
+                <span class="file-name"></span>
+                (<span class="file-size"></span>)
+            </li>
+        </template>
+
+        <input id="file-picker" multiple required type="file"/>
+        <ul id="selected-file-list"></ul>
+
+        <h2 class="step">
+            set options
+            <img alt="" aria-hidden="true" src="/images/set-options.svg"/>
+        </h2>
+
+        <label for="slug">slug (optional)</label>
+        <input id="slug" maxlength="32" minlength="6" pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$" placeholder="short-text"
+               style="margin-bottom: 8px; width: 200px;" type="text"/>
+        <br/>
+
+        <label for="expiration-date">expiration date</label>
+        <select id="expiration-date" required>
+            <option value="1">1 hour</option>
+            <option selected value="3">3 hours</option>
+            <option value="6">6 hours</option>
+            <option value="12">12 hours</option>
+            <option value="24">24 hours</option>
+        </select>
+
+        <h2 class="step">
+            <label for="upload-button">
+                upload
+                <img alt="" aria-hidden="true" src="/images/upload.svg"/>
+            </label>
+        </h2>
+
+        <input id="upload-button" type="submit" value="Upload"/>
+        <output id="error-output"></output>
+    </form>
+
+</main>
+<footer>
+    <p>&copy; bartosz bieniek</p>
+</footer>
+
+<script src="/js/index.js"></script>
+
+</body>
+</html>

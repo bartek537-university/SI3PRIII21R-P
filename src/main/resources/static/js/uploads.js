@@ -4,8 +4,8 @@ const API_URL = `${BASE_URL}/api`;
 const SHARE_TOKENS_LS_KEY = "share-tokens";
 
 function getStoredTokens() {
-    const data = localStorage.getItem(SHARE_TOKENS_LS_KEY);
-    return JSON.parse(data);
+    const shareTokensText = localStorage.getItem(SHARE_TOKENS_LS_KEY);
+    return JSON.parse(shareTokensText);
 }
 
 async function fetchShare(shareId) {
@@ -27,8 +27,8 @@ async function fetchAllShares(shareIds) {
 }
 
 function saveStoredTokens(tokens) {
-    const data = JSON.stringify(tokens);
-    localStorage.setItem(SHARE_TOKENS_LS_KEY, data);
+    const shareTokens = JSON.stringify(tokens);
+    localStorage.setItem(SHARE_TOKENS_LS_KEY, shareTokens);
 }
 
 function pruneInvalidTokens(shares) {
