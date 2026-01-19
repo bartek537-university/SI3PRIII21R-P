@@ -1,3 +1,10 @@
 h1.logo {
     margin: 0;
 }
+
+.step {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    margin-top: 24px;
+}
