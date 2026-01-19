@@ -1,13 +1,12 @@
 package pl.bartek537.snapdrop.features.share;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.bartek537.snapdrop.features.share.dto.AttachmentDownload;
 import pl.bartek537.snapdrop.features.share.model.Attachment;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,12 +44,15 @@ public class AttachmentController {
                                                 @RequestHeader(value = MANAGEMENT_TOKEN_HEADER, required = false) String token) {
 
         AttachmentDownload download = attachmentService.prepareAttachmentDownload(attachmentId, shareId, token);
-        return addContentDisposition(ResponseEntity.ok(), download.fileName()).body(download.resource());
+        return addContentDownloadHeaders(ResponseEntity.ok(), download.fileName()).body(download.resource());
     }
 
-    private ResponseEntity.BodyBuilder addContentDisposition(ResponseEntity.BodyBuilder builder, String fileName) {
-        String contentDisposition = String.format("attachment; filename=\"%s\"", fileName);
-        return builder.header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
+    private ResponseEntity.BodyBuilder addContentDownloadHeaders(ResponseEntity.BodyBuilder builder, String fileName) {
+        ContentDisposition contentDisposition = ContentDisposition.attachment()
+                .filename(fileName, StandardCharsets.UTF_8).build();
+
+        return builder.contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
     }
 
     @DeleteMapping("{attachmentId}")
