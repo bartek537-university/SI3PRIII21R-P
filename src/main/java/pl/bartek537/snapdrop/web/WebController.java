@@ -23,7 +23,7 @@ public class WebController {
         Set<Attachment> attachments = share.getAttachments();
 
         if (attachments.size() != 1) {
-            return String.format("forward:/uploads/%s", share.getId());
+            return String.format("redirect:/downloads/%s", share.getId());
         }
         Attachment attachment = attachments.iterator().next();
         return String.format("redirect:/api/shares/%s/attachments/%s/file", share.getId(), attachment.getId());

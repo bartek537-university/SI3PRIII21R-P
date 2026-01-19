@@ -1,1 +1,46 @@
-this is downloads.html
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="/css/main.css" rel="stylesheet"/>
+    <title>snap&rarr;drop</title>
+</head>
+<body>
+<header>
+    <span class="logo">
+        <a href="/">
+            snap <img alt="" aria-hidden="true" src="/images/arrow.svg"/> drop
+        </a>
+    </span>
+    <nav>
+        <ul>
+            <li><a href="/">new</a></li>
+            <li><a href="/uploads">my uploads</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <h1>
+        files shared with you
+        <img alt="" aria-hidden="true" src="/images/select-files.svg"/>
+    </h1>
+
+    <template id="attachment-template">
+        <li>
+            <a class="file-link"></a>
+        </li>
+    </template>
+
+    <ul id="attachment-list">
+
+    </ul>
+</main>
+<footer>
+    <p>&copy; bartosz bieniek</p>
+</footer>
+
+<script src="/js/downloads.js"></script>
+
+</body>
+</html>

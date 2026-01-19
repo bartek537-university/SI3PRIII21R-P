@@ -1,0 +1,62 @@
+:root {
+    --primary: #FF674D;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    font-family: 'Helvetica Neue', sans-serif;
+}
+
+body {
+    padding: 32px;
+    margin: auto;
+    max-width: 864px;
+}
+
+.active {
+    color: var(--primary);
+}
+
+h1, h2 {
+    font-weight: inherit;
+}
+
+a {
+    color: inherit;
+    text-decoration-color: var(--primary);
+
+    &:hover {
+        color: var(--primary);
+    }
+}
+
+img {
+    pointer-events: none;
+}
+
+header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    justify-content: space-between;
+
+    nav > ul {
+        display: flex;
+        gap: 24px;
+        list-style: none;
+    }
+}
+
+.logo {
+    font-size: 1.6em;
+
+    a {
+        display: inline-flex;
+        gap: 4px;
+        text-decoration: none;
+    }
+}
