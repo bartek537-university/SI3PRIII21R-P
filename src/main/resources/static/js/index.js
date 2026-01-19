@@ -65,7 +65,7 @@ async function createShare(sharePartial) {
         return body;
     }
 
-    throw new Error(body);
+    throw new Error(body.message);
 }
 
 function enableFormInput() {

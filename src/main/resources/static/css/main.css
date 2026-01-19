@@ -19,6 +19,10 @@ body {
     height: 100%;
 }
 
+::marker {
+    color: var(--primary);
+}
+
 ::selection {
     background: var(--primary-transparent);
 }
