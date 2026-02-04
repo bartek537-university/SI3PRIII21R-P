@@ -41,7 +41,7 @@ function pruneInvalidTokens(shares) {
 }
 
 async function changeExpiryDate(share, token) {
-    const enteredDateText = prompt("Enter the expiry date");
+    const enteredDateText = prompt("Enter the expiry date", share.expiresAt.toISOString());
 
     if (enteredDateText == null) {
         return;
